@@ -17,7 +17,6 @@ import com.chrhc.xjs.retry.persist.RetryPersistService;
  * 2016年8月6日 下午1:05:30
  */
 public class Main {
-	
 	public static class Business implements RetryAble{
 		public boolean retryAble() throws Exception{
 			try{
@@ -37,19 +36,23 @@ public class Main {
 			}
 		}
 	}
-
 	public static void main(String[] args) {
 		//创建service
 		RetryService service = new RetryService(new int[]{1,3,5,7,9}, new RetryPersistService());
 		//启动service
 		service.start(new OnRetryListener(){
+			//每次做重试完了以后都会回调
 			@Override
 			public void onRetryArrived(RetryTask retryTask) {
 				System.out.println("[main]onDelayedArrived:"+retryTask);
 			}
+			//最终失败了的时候会回调，只一次
+			@Override
 			public void onRetryFailed(RetryTask retryTask){
 				System.out.println("[main]onRetryFailed");
 			}
+			//最终成功了的时候会回调，只一次
+			@Override
 	        public void onRetrySuccessed(RetryTask retryTask){
 	        	System.out.println("[main]onRetrySuccessed");
 	        }

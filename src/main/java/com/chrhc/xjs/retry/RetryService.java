@@ -86,10 +86,11 @@ public class RetryService {
                     	if(persistService != null){
                     		persistService.delete(task);
                     	}
-                    	retry(task);
-                        if(retryListener != null){
-                        	retryListener.onRetryArrived(task);
-                        }
+                    	ThreadPoolUtil.execute(new Runnable(){
+                    		public void run(){
+                    			retry(task);
+                    		}
+                    	});
                     }
                 }catch(Exception e){
                     e.printStackTrace();
@@ -113,6 +114,9 @@ public class RetryService {
 			if(next != null){
 				System.out.println("[retry]will retry next:"+next);
 				add(next);
+				if(retryListener != null){
+		        	retryListener.onRetryArrived(task);
+		        }
 			}else{
 				System.out.println("[retry]sorry, i have tried all my best,abondon:"+task);
 				remove(task);
