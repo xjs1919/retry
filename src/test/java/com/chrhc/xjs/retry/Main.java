@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.chrhc.xjs.retry.client;
+package com.chrhc.xjs.retry;
 
 import java.util.Random;
 
