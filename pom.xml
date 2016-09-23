@@ -2,13 +2,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.chrhc.xjs</groupId>
+	<groupId>com.github.xjs1919</groupId>
 	<artifactId>retry</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
   <name>retry</name>
-  <url>https://github.com/xjs1919/locker</url>
+  <url>https://github.com/xjs1919/retry</url>
 
   <dependencies>
 		<dependency>

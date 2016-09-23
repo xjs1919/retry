@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.github.xjs.retry;
+package com.github.xjs1919.retry;
 
 import java.util.List;
 import java.util.concurrent.DelayQueue;
 
-import com.github.xjs.retry.persist.PersistService;
-import com.github.xjs.retry.util.ThreadPoolUtil;
+import com.github.xjs1919.retry.persist.PersistService;
+import com.github.xjs1919.retry.util.ThreadPoolUtil;
 
 /**
  * @author 605162215@qq.com
@@ -81,7 +81,7 @@ public class RetryService {
                 try{
                     while(true){
                     	//出队
-                    	RetryTask task = delayQueue.take();
+                    	final RetryTask task = delayQueue.take();
                     	ThreadPoolUtil.execute(new Runnable(){
                     		public void run(){
                     			retry(task);
@@ -144,7 +144,7 @@ public class RetryService {
     	add(retryTask, true);
     }
     
-    private void add(final RetryTask retryTask, boolean first){
+    private void add(final RetryTask retryTask,final boolean first){
         ThreadPoolUtil.execute(new Runnable(){
             public void run(){
                 // 入队

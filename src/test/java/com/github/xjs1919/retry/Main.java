@@ -1,15 +1,15 @@
 /**
  * 
  */
-package com.chrhc.xjs.retry;
+package com.github.xjs1919.retry;
 
 import java.util.Random;
 
-import com.github.xjs.retry.RetryAble;
-import com.github.xjs.retry.RetryService;
-import com.github.xjs.retry.RetryTask;
-import com.github.xjs.retry.RetryService.OnRetryListener;
-import com.github.xjs.retry.persist.RetryPersistService;
+import com.github.xjs1919.retry.RetryAble;
+import com.github.xjs1919.retry.RetryService;
+import com.github.xjs1919.retry.RetryTask;
+import com.github.xjs1919.retry.RetryService.OnRetryListener;
+import com.github.xjs1919.retry.persist.RetryPersistService;
 
 /**
  * @author 605162215@qq.com

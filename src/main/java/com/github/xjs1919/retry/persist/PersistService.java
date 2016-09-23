@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.github.xjs.retry.persist;
+package com.github.xjs1919.retry.persist;
 
 import java.util.List;
 
