@@ -20,7 +20,7 @@ public class ThreadPoolUtil {
 	private static ThreadPoolUtil instance = new ThreadPoolUtil();
 
 	private ThreadPoolUtil() {
-		this.executor = Executors.newFixedThreadPool(5);
+		this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
 	}
 
 	public static ThreadPoolUtil getInstance() {
