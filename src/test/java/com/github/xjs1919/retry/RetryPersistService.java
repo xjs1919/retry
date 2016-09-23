@@ -1,18 +1,16 @@
 /**
  * 
  */
-package com.github.xjs1919.retry.persist;
+package com.github.xjs1919.retry;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-//import com.github.xjs1919.retry.Main;
-import com.github.xjs1919.retry.RetryAble;
-import com.github.xjs1919.retry.RetryTask;
+import com.github.xjs1919.retry.persist.PersistService;
 
 /**
  * @author 605162215@qq.com
@@ -21,7 +19,7 @@ import com.github.xjs1919.retry.RetryTask;
  */
 public class RetryPersistService implements PersistService<RetryTask>{
 	
-	private Map<String, String> db = new HashMap<String, String>();
+	private ConcurrentHashMap<String, String> db = new ConcurrentHashMap<String, String>();
 	
 	@Override
 	public void save(RetryTask task) {
@@ -51,8 +49,8 @@ public class RetryPersistService implements PersistService<RetryTask>{
 	@Override
 	public List<RetryTask> getAll() {
 		
-//		RetryTask oldTask = new RetryTask(Main.Business.class, 0);
-//		db.put(oldTask.getUuid(),  "{\"clazz\":\""+oldTask.getTask().getName()+"\",\"interval\":\""+oldTask.getInterval()+"\", \"id\":\""+oldTask.getUuid()+"\", \"index\":"+oldTask.getIndex()+"}");
+		RetryTask oldTask = new RetryTask(Main.Business.class, 0);
+		db.put(oldTask.getUuid(),  "{\"clazz\":\""+oldTask.getTask().getName()+"\",\"interval\":\""+oldTask.getInterval()+"\", \"id\":\""+oldTask.getUuid()+"\", \"index\":"+oldTask.getIndex()+"}");
 		
 		System.out.println("[RetryPersistService]getAll");
 		List<RetryTask> list = new ArrayList<RetryTask>();

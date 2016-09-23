@@ -9,7 +9,6 @@ import com.github.xjs1919.retry.RetryAble;
 import com.github.xjs1919.retry.RetryService;
 import com.github.xjs1919.retry.RetryTask;
 import com.github.xjs1919.retry.RetryService.OnRetryListener;
-import com.github.xjs1919.retry.persist.RetryPersistService;
 
 /**
  * @author 605162215@qq.com
