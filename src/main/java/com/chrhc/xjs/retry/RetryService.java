@@ -80,12 +80,8 @@ public class RetryService {
             	//等待从重试任务
                 try{
                     while(true){
-                    	//出对
+                    	//出队
                     	RetryTask task = delayQueue.take();
-                    	//同时要删掉数据库
-                    	if(persistService != null){
-                    		persistService.delete(task);
-                    	}
                     	ThreadPoolUtil.execute(new Runnable(){
                     		public void run(){
                     			retry(task);
@@ -100,12 +96,15 @@ public class RetryService {
     }
 
     public void retry(RetryTask task){
+    	if(task == null){
+    		return;
+    	}
 		System.out.println("[retry]do retry:"+task);
 		boolean success = false;
 		try{
 			Class<? extends RetryAble> taskClass = task.getTask();
 			RetryAble retryAble = taskClass.newInstance();
-			success = retryAble.retryAble();
+			success = retryAble.retry();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -113,46 +112,57 @@ public class RetryService {
 			RetryTask next = getNextTask(task);
 			if(next != null){
 				System.out.println("[retry]will retry next:"+next);
-				add(next);
+				add(next, false);
 				if(retryListener != null){
 		        	retryListener.onRetryArrived(task);
 		        }
 			}else{
 				System.out.println("[retry]sorry, i have tried all my best,abondon:"+task);
-				remove(task);
+				remove(task, true);
 				if(retryListener != null){
 					retryListener.onRetryFailed(task);
 				}
 			}
 		}else{
 			System.out.println("[retry]success!"+task);
-			remove(task);
+			remove(task, false);
 			if(retryListener != null){
 				retryListener.onRetrySuccessed(task);
 			}
 		}
 	}
     
-    public void add(Class<? extends RetryAble> task){
-    	RetryTask retryTask = new RetryTask(task, intervals[0]);
-    	add(retryTask);
+    public void add(RetryAble task){
+    	if(task == null){
+    		return;
+    	}
+    	add(task.getClass());
     }
     
-    private void add(final RetryTask retryTask){
+    public void add(Class<? extends RetryAble> taskClass){
+    	RetryTask retryTask = new RetryTask(taskClass, intervals[0]);
+    	add(retryTask, true);
+    }
+    
+    private void add(final RetryTask retryTask, boolean first){
         ThreadPoolUtil.execute(new Runnable(){
             public void run(){
                 // 入队
                 delayQueue.put(retryTask);
                 // 做持久化
                 if(persistService != null){
-                	persistService.save(retryTask);
+                	if(first){
+                		persistService.save(retryTask);
+                	}else{
+                		persistService.update(retryTask);
+                	}
                 }
                 System.out.println("[retry]delayQueue.size："+delayQueue.size()+",persistService.size:"+persistService.size());
             }
         });
     }
-
-    public void remove(final RetryTask target){
+  
+    public void remove(final RetryTask target, final boolean logical){
         ThreadPoolUtil.execute(new Runnable() {
             public void run() {
                 if (target == null) {
@@ -162,26 +172,24 @@ public class RetryService {
                 delayQueue.remove(target);
                 // 从持久化删除
                 if(persistService != null){
-                	persistService.delete(target);
+                	if(logical){
+                		persistService.deleteLogic(target);
+                	}else{
+                		persistService.delete(target);
+                	}
                 }
-                System.out.println("[retry]delayQueue.size："+delayQueue.size()+",persistService.size:"+persistService.size());
+                System.out.println("[retry]delayQueue.size："+delayQueue.size()+",persistService.size:"+persistService.size()+",getAll():"+persistService.getAll());
             }
         });
     }
     
     public RetryTask getNextTask(RetryTask task){
-        int nextInterval = 0;
-        for(int i=0; i<intervals.length-1; i++){
-            int iv = intervals[i];
-            if(iv == task.getInterval()){
-                nextInterval = intervals[i+1];
-                break;
-            }
-        }
-        if(nextInterval <= 0){
-            return null;
-        }
-        return new RetryTask(task.getTask(), nextInterval);
+    	int index = task.getIndex();
+    	if(index >= intervals.length-1){
+    		return null;
+    	}
+    	int nextInterval = intervals[index + 1];
+        return task.update(nextInterval);
     }
     
 }

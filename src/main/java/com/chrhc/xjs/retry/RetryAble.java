@@ -10,6 +10,6 @@ package com.chrhc.xjs.retry;
  */
 public interface RetryAble {
 
-	public boolean retryAble()throws Exception;
+	public boolean retry()throws Exception;
 	
 }

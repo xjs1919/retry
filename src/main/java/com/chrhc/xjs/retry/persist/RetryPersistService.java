@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.chrhc.xjs.retry.Main;
 import com.chrhc.xjs.retry.RetryAble;
 import com.chrhc.xjs.retry.RetryTask;
 
@@ -23,32 +24,46 @@ public class RetryPersistService implements PersistService<RetryTask>{
 	private Map<String, String> db = new HashMap<String, String>();
 	
 	@Override
-	public void save(RetryTask retryService) {
-		System.out.println("[RetryPersistService]save:"+retryService);
-		String uuid = retryService.getUuid();
-		int interval = retryService.getInterval();
-		db.put(uuid, "{\"clazz\":\""+retryService.getTask().getName()+"\",\"interval\":\""+interval+"\"}");
+	public void save(RetryTask task) {
+		System.out.println("[RetryPersistService]save:"+task);
+		String uuid = task.getUuid();
+		int interval = task.getInterval();
+		db.put(uuid, "{\"clazz\":\""+task.getTask().getName()+"\",\"interval\":\""+interval+"\", \"id\":\""+task.getUuid()+"\", \"index\":"+task.getIndex()+"}");
 	}
 	
 	@Override
-	public void delete(RetryTask retryService) {
-		System.out.println("[RetryPersistService]delete:"+retryService);
-		String uuid = retryService.getUuid();
+	public void delete(RetryTask task) {
+		System.out.println("[RetryPersistService]delete:"+task);
+		String uuid = task.getUuid();
 		db.remove(uuid);
 	}
-
+	@Override
+	public void update(RetryTask task){
+		System.out.println("[RetryPersistService]update:"+task);
+		String uuid = task.getUuid();
+		db.remove(uuid);
+		save(task);
+	}
+	@Override
+	public void deleteLogic(RetryTask task) {
+		delete(task);
+	}
 	@Override
 	public List<RetryTask> getAll() {
+		
+		RetryTask oldTask = new RetryTask(Main.Business.class, 0);
+		db.put(oldTask.getUuid(),  "{\"clazz\":\""+oldTask.getTask().getName()+"\",\"interval\":\""+oldTask.getInterval()+"\", \"id\":\""+oldTask.getUuid()+"\", \"index\":"+oldTask.getIndex()+"}");
+		
 		System.out.println("[RetryPersistService]getAll");
 		List<RetryTask> list = new ArrayList<RetryTask>();
 		for(Map.Entry<String, String> entry : db.entrySet()){
-			String uuid = entry.getKey();
 			String json = entry.getValue();
 			JSONObject jo = JSON.parseObject(json);
 			String clazzName = jo.getString("clazz");
 			int interval = jo.getIntValue("interval");
-			RetryTask task = new RetryTask(getClass(clazzName), interval);
-			task.setUuid(uuid);
+			String id = jo.getString("id");
+			int index = jo.getIntValue("index");
+			RetryTask task = new RetryTask(id, index, interval, getClass(clazzName));
 			list.add(task);
 		}
 		return list;
@@ -68,4 +83,5 @@ public class RetryPersistService implements PersistService<RetryTask>{
 			return null;
 		}
 	}
+	
 }

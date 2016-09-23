@@ -15,15 +15,24 @@ import java.util.concurrent.TimeUnit;
 public class RetryTask implements Delayed{
 
     private Class<? extends RetryAble> task;
+    private int index;
     private int interval;
     private long startTime;
     private String uuid;
 
+    private RetryTask(){
+    }
+    
     public RetryTask(Class<? extends RetryAble> task, int interval){
-        this.task = task;
+        this(UUID.randomUUID().toString().replace("-", ""), 0, interval, task);
+    }
+    
+    public RetryTask(String uuid,  int index,  int interval, Class<? extends RetryAble> task){
+    	this.uuid = uuid;
+    	this.index = index;
         this.interval = interval;
+        this.task = task;
         this.startTime = System.currentTimeMillis() + interval*1000L;
-        this.uuid = UUID.randomUUID().toString().replace("-", "");
     }
 
     @Override
@@ -43,6 +52,16 @@ public class RetryTask implements Delayed{
     public long getDelay(TimeUnit unit) {
         return unit.convert(startTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
     }
+    
+    public RetryTask update(int interval){
+    	 RetryTask task = new RetryTask();
+    	 task.uuid = this.uuid;
+    	 task.task = this.task;
+    	 task.index = this.index+1;
+    	 task.interval = interval;
+         task.startTime = System.currentTimeMillis() + interval*1000L;
+         return task;
+    }
 
 	public Class<? extends RetryAble> getTask() {
 		return task;
@@ -60,45 +79,13 @@ public class RetryTask implements Delayed{
 		return uuid;
 	}
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + interval;
-		result = prime * result + (int) (startTime ^ (startTime >>> 32));
-		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		RetryTask other = (RetryTask) obj;
-		if (interval != other.interval)
-			return false;
-		if (startTime != other.startTime)
-			return false;
-		if (uuid == null) {
-			if (other.uuid != null)
-				return false;
-		} else if (!uuid.equals(other.uuid))
-			return false;
-		return true;
+	public int getIndex() {
+		return index;
 	}
 
 	@Override
 	public String toString() {
-		return "RetryTask [task=" + task + ", interval=" + interval + ", startTime=" + startTime + ", uuid=" + uuid
-				+ "]";
+		return "RetryTask [task=" + task + ", index=" + index + ", interval=" + interval + ", startTime=" + startTime
+				+ ", uuid=" + uuid + "]";
 	}
-	
 }

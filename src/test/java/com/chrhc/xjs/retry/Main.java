@@ -18,7 +18,7 @@ import com.chrhc.xjs.retry.persist.RetryPersistService;
  */
 public class Main {
 	public static class Business implements RetryAble{
-		public boolean retryAble() throws Exception{
+		public boolean retry() throws Exception{
 			try{
 				System.out.println("[Business]do business...");
 				Thread.sleep(1000);
@@ -38,7 +38,7 @@ public class Main {
 	}
 	public static void main(String[] args) {
 		//创建service
-		RetryService service = new RetryService(new int[]{1,3,5,7,9}, new RetryPersistService());
+		RetryService service = new RetryService(new int[]{0,0,0}, new RetryPersistService());
 		//启动service
 		service.start(new OnRetryListener(){
 			//每次做重试完了以后都会回调
@@ -60,11 +60,11 @@ public class Main {
 		//做业务逻辑处理
 		Business business = new Business();
 		try{
-			business.retryAble();
+			business.retry();
 		}catch(Exception e){
 			System.out.println("[main]business ecxception, try redo");
 			//失败重试
-			service.add(Business.class);
+			service.add(business);
 		}
 	}
 }
