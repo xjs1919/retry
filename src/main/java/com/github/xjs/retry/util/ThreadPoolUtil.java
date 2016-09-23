@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.chrhc.xjs.retry.util;
+package com.github.xjs.retry.util;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;

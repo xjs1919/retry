@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.chrhc.xjs.retry;
+package com.github.xjs.retry;
 
 import java.util.UUID;
 import java.util.concurrent.Delayed;

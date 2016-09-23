@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.chrhc.xjs.retry.persist;
+package com.github.xjs.retry.persist;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,8 +11,8 @@ import java.util.Map;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chrhc.xjs.retry.Main;
-import com.chrhc.xjs.retry.RetryAble;
-import com.chrhc.xjs.retry.RetryTask;
+import com.github.xjs.retry.RetryAble;
+import com.github.xjs.retry.RetryTask;
 
 /**
  * @author 605162215@qq.com

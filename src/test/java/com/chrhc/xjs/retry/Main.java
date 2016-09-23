@@ -5,11 +5,11 @@ package com.chrhc.xjs.retry;
 
 import java.util.Random;
 
-import com.chrhc.xjs.retry.RetryAble;
-import com.chrhc.xjs.retry.RetryService;
-import com.chrhc.xjs.retry.RetryService.OnRetryListener;
-import com.chrhc.xjs.retry.RetryTask;
-import com.chrhc.xjs.retry.persist.RetryPersistService;
+import com.github.xjs.retry.RetryAble;
+import com.github.xjs.retry.RetryService;
+import com.github.xjs.retry.RetryTask;
+import com.github.xjs.retry.RetryService.OnRetryListener;
+import com.github.xjs.retry.persist.RetryPersistService;
 
 /**
  * @author 605162215@qq.com

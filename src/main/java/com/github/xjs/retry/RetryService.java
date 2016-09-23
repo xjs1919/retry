@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.chrhc.xjs.retry;
+package com.github.xjs.retry;
 
 import java.util.List;
 import java.util.concurrent.DelayQueue;
 
-import com.chrhc.xjs.retry.persist.PersistService;
-import com.chrhc.xjs.retry.util.ThreadPoolUtil;
+import com.github.xjs.retry.persist.PersistService;
+import com.github.xjs.retry.util.ThreadPoolUtil;
 
 /**
  * @author 605162215@qq.com

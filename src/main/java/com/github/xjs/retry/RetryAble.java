@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.chrhc.xjs.retry;
+package com.github.xjs.retry;
 
 /**
  * @author 605162215@qq.com
