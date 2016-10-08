@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class RetryTask implements Delayed{
 
     private Class<? extends RetryAble> task;
+    private String param;
     private int index;
     private int interval;
     private long startTime;
@@ -23,16 +24,17 @@ public class RetryTask implements Delayed{
     private RetryTask(){
     }
     
-    public RetryTask(Class<? extends RetryAble> task, int interval){
-        this(UUID.randomUUID().toString().replace("-", ""), 0, interval, task);
+    public RetryTask(Class<? extends RetryAble> task, String param, int interval){
+        this(UUID.randomUUID().toString().replace("-", ""), 0, interval, task, param);
     }
     
-    public RetryTask(String uuid,  int index,  int interval, Class<? extends RetryAble> task){
+    public RetryTask(String uuid,  int index,  int interval, Class<? extends RetryAble> task,String param){
     	this.uuid = uuid;
     	this.index = index;
         this.interval = interval;
         this.task = task;
         this.startTime = System.currentTimeMillis() + interval*1000L;
+        this.param = param;
     }
 
     @Override
@@ -57,6 +59,7 @@ public class RetryTask implements Delayed{
     	 RetryTask task = new RetryTask();
     	 task.uuid = this.uuid;
     	 task.task = this.task;
+    	 task.param = this.param;
     	 task.index = this.index+1;
     	 task.interval = interval;
          task.startTime = System.currentTimeMillis() + interval*1000L;
@@ -82,10 +85,14 @@ public class RetryTask implements Delayed{
 	public int getIndex() {
 		return index;
 	}
+	
+	public String getParam(){
+		return param;
+	}
 
 	@Override
 	public String toString() {
-		return "RetryTask [task=" + task + ", index=" + index + ", interval=" + interval + ", startTime=" + startTime
-				+ ", uuid=" + uuid + "]";
+		return "RetryTask [task=" + task + ", param=" + param + ", index=" + index + ", interval=" + interval
+				+ ", startTime=" + startTime + ", uuid=" + uuid + "]";
 	}
 }

@@ -49,8 +49,13 @@ public class RetryPersistService implements PersistService<RetryTask>{
 	@Override
 	public List<RetryTask> getAll() {
 		
-		RetryTask oldTask = new RetryTask(Main.Business.class, 0);
-		db.put(oldTask.getUuid(),  "{\"clazz\":\""+oldTask.getTask().getName()+"\",\"interval\":\""+oldTask.getInterval()+"\", \"id\":\""+oldTask.getUuid()+"\", \"index\":"+oldTask.getIndex()+"}");
+		RetryTask oldTask = new RetryTask("uuid",0,0,Main.Business.class, "old param");
+		db.put(oldTask.getUuid(),  "{"
+								+ "\"clazz\":\""+oldTask.getTask().getName()+"\","
+								+ "\"param\":\""+oldTask.getParam()+"\","
+								+ "\"interval\":\""+oldTask.getInterval()+"\", "
+								+ "\"id\":\""+oldTask.getUuid()+"\", "
+								+ "\"index\":"+oldTask.getIndex()+"}");
 		
 		System.out.println("[RetryPersistService]getAll");
 		List<RetryTask> list = new ArrayList<RetryTask>();
@@ -61,7 +66,8 @@ public class RetryPersistService implements PersistService<RetryTask>{
 			int interval = jo.getIntValue("interval");
 			String id = jo.getString("id");
 			int index = jo.getIntValue("index");
-			RetryTask task = new RetryTask(id, index, interval, getClass(clazzName));
+			String param = jo.getString("param");
+			RetryTask task = new RetryTask(id, index, interval, getClass(clazzName), param);
 			list.add(task);
 		}
 		return list;
@@ -81,5 +87,4 @@ public class RetryPersistService implements PersistService<RetryTask>{
 			return null;
 		}
 	}
-	
 }

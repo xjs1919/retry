@@ -104,7 +104,7 @@ public class RetryService {
 		try{
 			Class<? extends RetryAble> taskClass = task.getTask();
 			RetryAble retryAble = taskClass.newInstance();
-			success = retryAble.retry();
+			success = retryAble.retry(task.getParam());
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -132,15 +132,15 @@ public class RetryService {
 		}
 	}
     
-    public void add(RetryAble task){
+    public void add(RetryAble task, String param){
     	if(task == null){
     		return;
     	}
-    	add(task.getClass());
+    	add(task.getClass(), param);
     }
     
-    public void add(Class<? extends RetryAble> taskClass){
-    	RetryTask retryTask = new RetryTask(taskClass, intervals[0]);
+    public void add(Class<? extends RetryAble> taskClass, String param){
+    	RetryTask retryTask = new RetryTask(taskClass, param, intervals[0]);
     	add(retryTask, true);
     }
     
@@ -178,7 +178,7 @@ public class RetryService {
                 		persistService.delete(target);
                 	}
                 }
-                System.out.println("[retry]delayQueue.size£º"+delayQueue.size()+",persistService.size:"+persistService.size()+",getAll():"+persistService.getAll());
+                System.out.println("[retry]delayQueue.size£º"+delayQueue.size()+",persistService.size:"+persistService.size());
             }
         });
     }

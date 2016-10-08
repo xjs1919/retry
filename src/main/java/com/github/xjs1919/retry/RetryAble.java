@@ -9,7 +9,5 @@ package com.github.xjs1919.retry;
  * 2016年8月6日 下午2:18:28
  */
 public interface RetryAble {
-
-	public boolean retry()throws Exception;
-	
+	public boolean retry(String param)throws Exception;
 }

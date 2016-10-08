@@ -5,9 +5,6 @@ package com.github.xjs1919.retry;
 
 import java.util.Random;
 
-import com.github.xjs1919.retry.RetryAble;
-import com.github.xjs1919.retry.RetryService;
-import com.github.xjs1919.retry.RetryTask;
 import com.github.xjs1919.retry.RetryService.OnRetryListener;
 
 /**
@@ -17,9 +14,11 @@ import com.github.xjs1919.retry.RetryService.OnRetryListener;
  */
 public class Main {
 	public static class Business implements RetryAble{
-		public boolean retry() throws Exception{
+		
+		@Override
+		public boolean retry(String param) throws Exception{
 			try{
-				System.out.println("[Business]do business...");
+				System.out.println("[Business]do business,param:"+param);
 				Thread.sleep(1000);
 				int rnd = new Random().nextInt(100);
 				System.out.println("[Business]rnd:"+rnd);
@@ -37,7 +36,7 @@ public class Main {
 	}
 	public static void main(String[] args) {
 		//创建service
-		RetryService service = new RetryService(new int[]{0,0,0}, new RetryPersistService());
+		RetryService service = new RetryService(new int[]{1,3,5}, new RetryPersistService());
 		//启动service
 		service.start(new OnRetryListener(){
 			//每次做重试完了以后都会回调
@@ -57,13 +56,14 @@ public class Main {
 	        }
 		});
 		//做业务逻辑处理
+		String param = "测试字符串";
 		Business business = new Business();
 		try{
-			business.retry();
+			business.retry(param);
 		}catch(Exception e){
 			System.out.println("[main]business ecxception, try redo");
 			//失败重试
-			service.add(business);
+			service.add(business, param);
 		}
 	}
 }
